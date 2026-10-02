@@ -27,6 +27,12 @@ export interface ProposalSettings {
   coverImage: string
 }
 
+export interface Adjustment {
+  id: string
+  name: string
+  amount: number
+}
+
 export interface Proposal {
   id: string
   title: string
@@ -34,6 +40,7 @@ export interface Proposal {
   weddingDate: string
   location: string
   events: WeddingEvent[]
+  adjustments: Adjustment[]
   notes: string
   settings: ProposalSettings
 }

@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, HTMLInputTypeAttribute } from 'react'
+import type { ChangeEventHandler, FocusEventHandler, HTMLInputTypeAttribute, Ref } from 'react'
 
 interface EditorFieldProps {
   label: string
@@ -6,6 +6,9 @@ interface EditorFieldProps {
   onChange: ChangeEventHandler<HTMLInputElement>
   type?: HTMLInputTypeAttribute
   inputMode?: 'text' | 'numeric'
+  inputRef?: Ref<HTMLInputElement>
+  onFocus?: FocusEventHandler<HTMLInputElement>
+  onBlur?: FocusEventHandler<HTMLInputElement>
 }
 
 export function EditorField({
@@ -14,15 +17,21 @@ export function EditorField({
   onChange,
   type = 'text',
   inputMode = 'text',
+  inputRef,
+  onFocus,
+  onBlur,
 }: EditorFieldProps) {
   return (
     <label className="editor-field">
       <span>{label}</span>
       <input
+        ref={inputRef}
         type={type}
         inputMode={inputMode}
         value={value}
         onChange={onChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
       />
     </label>
   )

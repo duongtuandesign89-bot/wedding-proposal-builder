@@ -41,6 +41,23 @@
 .event-editor-title > span { color: var(--app-gold); font: 16px/1 Georgia, serif; }
 .event-editor-title strong { font-size: 12px; font-weight: 600; letter-spacing: .06em; min-width: 0; overflow-wrap: anywhere; text-transform: uppercase; }
 .event-editor > .editor-field { margin-top: 14px; }
+.event-editor-fields > .editor-field { margin-top: 14px; }
+.proposal-editor .editor-action, .proposal-editor .editor-add { background: transparent; border: 0; color: var(--app-muted); font-size: 12px; min-height: 44px; padding: 8px; text-align: left; }
+.proposal-editor .editor-action:hover:not(:disabled), .proposal-editor .editor-add:hover { color: var(--app-ink); background: #ede8de; }
+.proposal-editor button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.proposal-editor .editor-action:disabled { opacity: .35; cursor: default; }
+.proposal-editor .editor-action--arrow { min-width: 44px; text-align: center; }
+.proposal-editor .editor-add { margin-top: 14px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.event-editor-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: -8px 0 16px; }
+.event-editor-summary { display: grid; gap: 4px; color: var(--app-muted); font-size: 12px; text-transform: uppercase; overflow-wrap: anywhere; }
+.editor-delete-confirm { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; border-block: 1px solid var(--app-line); margin-bottom: 16px; }
+.editor-delete-confirm p { font-size: 13px; margin-right: auto; }
+.proposal-editor .editor-action--danger { color: #9a3427; }
+.service-editor-item { display: grid; gap: 10px; min-width: 0; }
+.service-editor-item > .editor-action, .adjustment-editor-item > .editor-action { justify-self: end; }
+.adjustment-editor-list { display: grid; gap: 16px; }
+.adjustment-editor-item { display: grid; min-width: 0; }
+.editor-help { color: var(--app-muted); font-size: 12px; line-height: 1.6; margin: 0 0 18px; }
 .service-editor-list { border-top: 1px solid var(--app-line); display: grid; gap: 12px; margin-top: 20px; padding-top: 18px; }
 .service-editor-row { align-items: end; display: grid; gap: 10px; grid-template-columns: minmax(0, 1.25fr) minmax(112px, .75fr); min-width: 0; }
 .service-editor-row .editor-field:last-child input { font-variant-numeric: tabular-nums; text-align: right; }

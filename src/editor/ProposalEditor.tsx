@@ -1,82 +1,53 @@
-import type { Couple, Proposal, ServiceItem, WeddingEvent } from '../types/proposal'
-import { formatCurrency, parseCurrencyInput } from '../utils/currency'
+import type { Proposal } from '../types/proposal'
+import type { ProposalEditorActions } from './useProposalEditor'
 import { EditorField } from './EditorField'
+import { EventEditor } from './EventEditor'
+import { AmountField } from './AmountField'
 
-interface ProposalEditorProps {
-  proposal: Proposal
-  onCoupleChange: (field: keyof Couple, value: string) => void
-  onGeneralChange: (field: 'title' | 'weddingDate' | 'location', value: string) => void
-  onEventChange: (eventId: string, field: keyof Omit<WeddingEvent, 'id' | 'services'>, value: string) => void
-  onServiceChange: (eventId: string, serviceId: string, field: keyof Pick<ServiceItem, 'name' | 'price'>, value: string | number) => void
-}
-
-export function ProposalEditor({
-  proposal,
-  onCoupleChange,
-  onGeneralChange,
-  onEventChange,
-  onServiceChange,
-}: ProposalEditorProps) {
-  return (
-    <aside className="proposal-editor" aria-label="Proposal editor">
-      <header className="editor-header">
-        <div className="editor-brand-mark">S</div>
-        <div>
-          <p>Solis Studio</p>
-          <h1>Proposal Editor</h1>
+export function ProposalEditor({ proposal, actions }: { proposal: Proposal; actions: ProposalEditorActions }) {
+  return <aside className="proposal-editor" aria-label="Proposal editor">
+    <header className="editor-header">
+      <div className="editor-brand-mark">S</div>
+      <div><p>Solis Studio</p><h1>Proposal Editor</h1></div>
+      <span className="editor-status">Live</span>
+    </header>
+    <div className="editor-content">
+      <section className="editor-section">
+        <div className="editor-section-heading"><span>01</span><h2>Couple</h2></div>
+        <div className="editor-grid editor-grid--two">
+          <EditorField label="Bride name" value={proposal.couple.brideName} onChange={e => actions.updateCouple('brideName', e.target.value)} />
+          <EditorField label="Groom name" value={proposal.couple.groomName} onChange={e => actions.updateCouple('groomName', e.target.value)} />
         </div>
-        <span className="editor-status">Live</span>
-      </header>
-
-      <div className="editor-content">
-        <section className="editor-section">
-          <div className="editor-section-heading"><span>01</span><h2>Couple</h2></div>
-          <div className="editor-grid editor-grid--two">
-            <EditorField label="Bride name" value={proposal.couple.brideName} onChange={(event) => onCoupleChange('brideName', event.target.value)} />
-            <EditorField label="Groom name" value={proposal.couple.groomName} onChange={(event) => onCoupleChange('groomName', event.target.value)} />
-          </div>
-        </section>
-
-        <section className="editor-section">
-          <div className="editor-section-heading"><span>02</span><h2>General</h2></div>
-          <div className="editor-grid">
-            <EditorField label="Proposal title" value={proposal.title} onChange={(event) => onGeneralChange('title', event.target.value)} />
-            <EditorField label="Wedding date" value={proposal.weddingDate} onChange={(event) => onGeneralChange('weddingDate', event.target.value)} />
-            <EditorField label="Location" value={proposal.location} onChange={(event) => onGeneralChange('location', event.target.value)} />
-          </div>
-        </section>
-
-        <section className="editor-section">
-          <div className="editor-section-heading"><span>03</span><h2>Wedding Events</h2></div>
-          <div className="event-editors">
-            {proposal.events.map((weddingEvent, eventIndex) => (
-              <article className="event-editor" key={weddingEvent.id}>
-                <div className="event-editor-title">
-                  <span>{String(eventIndex + 1).padStart(2, '0')}</span>
-                  <strong>{weddingEvent.name || 'Untitled event'}</strong>
-                </div>
-                <div className="editor-grid editor-grid--two">
-                  <EditorField label={`Event ${eventIndex + 1} name`} value={weddingEvent.name} onChange={(event) => onEventChange(weddingEvent.id, 'name', event.target.value)} />
-                  <EditorField label={`Event ${eventIndex + 1} date`} value={weddingEvent.date} onChange={(event) => onEventChange(weddingEvent.id, 'date', event.target.value)} />
-                  <EditorField label={`Event ${eventIndex + 1} start time`} value={weddingEvent.startTime} onChange={(event) => onEventChange(weddingEvent.id, 'startTime', event.target.value)} />
-                  <EditorField label={`Event ${eventIndex + 1} end time`} value={weddingEvent.endTime} onChange={(event) => onEventChange(weddingEvent.id, 'endTime', event.target.value)} />
-                </div>
-                <EditorField label={`Event ${eventIndex + 1} location`} value={weddingEvent.location} onChange={(event) => onEventChange(weddingEvent.id, 'location', event.target.value)} />
-
-                <div className="service-editor-list">
-                  <p className="service-editor-label">Services</p>
-                  {weddingEvent.services.map((service) => (
-                    <div className="service-editor-row" key={service.id}>
-                      <EditorField label={`${service.name} name for ${weddingEvent.name}`} value={service.name} onChange={(event) => onServiceChange(weddingEvent.id, service.id, 'name', event.target.value)} />
-                      <EditorField label={`${service.name} price for ${weddingEvent.name}`} value={formatCurrency(service.price)} inputMode="numeric" onChange={(event) => onServiceChange(weddingEvent.id, service.id, 'price', parseCurrencyInput(event.target.value))} />
-                    </div>
-                  ))}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      </div>
-    </aside>
-  )
+      </section>
+      <section className="editor-section">
+        <div className="editor-section-heading"><span>02</span><h2>General</h2></div>
+        <div className="editor-grid">
+          <EditorField label="Proposal title" value={proposal.title} onChange={e => actions.updateGeneral('title', e.target.value)} />
+          <EditorField label="Wedding date" value={proposal.weddingDate} onChange={e => actions.updateGeneral('weddingDate', e.target.value)} />
+          <EditorField label="Location" value={proposal.location} onChange={e => actions.updateGeneral('location', e.target.value)} />
+        </div>
+      </section>
+      <section className="editor-section">
+        <div className="editor-section-heading"><span>03</span><h2>Wedding Events</h2></div>
+        <div className="event-editors">
+          {proposal.events.map((event, index) => <EventEditor key={event.id} event={event} index={index} count={proposal.events.length} actions={actions} />)}
+        </div>
+        <button type="button" className="editor-add" onClick={actions.addEvent}>+ Thêm sự kiện</button>
+      </section>
+      <section className="editor-section">
+        <div className="editor-section-heading"><span>04</span><h2>Điều chỉnh chi phí</h2></div>
+        <p className="editor-help">Số dương cho phụ phí, số âm cho ưu đãi hoặc giảm giá.</p>
+        <div className="adjustment-editor-list">
+          {proposal.adjustments.map((item, index) => <div className="adjustment-editor-item" key={item.id}>
+            <div className="service-editor-row">
+              <EditorField label={`Adjustment ${index + 1} name`} value={item.name} onChange={e => actions.updateAdjustment(item.id, { name: e.target.value })} />
+              <AmountField label={`Adjustment ${index + 1} amount`} value={item.amount} signed onChange={amount => actions.updateAdjustment(item.id, { amount })} />
+            </div>
+            <button type="button" className="editor-action" aria-label={`Xóa điều chỉnh ${item.name}`} onClick={() => actions.removeAdjustment(item.id)}>Xóa điều chỉnh</button>
+          </div>)}
+        </div>
+        <button type="button" className="editor-add" onClick={actions.addAdjustment}>+ Thêm điều chỉnh</button>
+      </section>
+    </div>
+  </aside>
 }

@@ -21,13 +21,13 @@ export const demoProposal: Proposal = {
         {
           id: 'vu-quy-photo',
           name: 'Photography',
-          description: 'Editorial wedding-day photography coverage',
+          description: '',
           price: 4_500_000,
         },
         {
           id: 'vu-quy-film',
           name: 'Wedding Film',
-          description: 'Cinematic highlight film coverage',
+          description: '',
           price: 4_000_000,
         },
       ],
@@ -43,13 +43,13 @@ export const demoProposal: Proposal = {
         {
           id: 'thanh-hon-photo',
           name: 'Photography',
-          description: 'Full celebration photography coverage',
+          description: '',
           price: 5_500_000,
         },
         {
           id: 'thanh-hon-film',
           name: 'Wedding Film',
-          description: 'Cinematic ceremony and reception film',
+          description: '',
           price: 5_000_000,
         },
         {
@@ -65,6 +65,7 @@ export const demoProposal: Proposal = {
       ],
     },
   ],
+  adjustments: [],
   notes: '',
   settings: {
     studioName: 'Solis Studio',

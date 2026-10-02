@@ -1,0 +1,103 @@
+import { fireEvent, render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import App from '../App'
+
+const editor = () => within(screen.getByRole('complementary', { name: 'Proposal editor' }))
+const preview = () => within(screen.getByRole('article', { name: 'Wedding proposal' }))
+
+describe('dynamic quote editing', () => {
+  it('adds an expanded event and renders Vietnamese names live', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(editor().getByRole('button', { name: /thêm sự kiện/i }))
+    const name = editor().getByLabelText('Event 3 name')
+    fireEvent.change(name, { target: { value: 'Lễ Đính Hôn – Ánh & Đức' } })
+    expect(preview().getByRole('heading', { name: 'LỄ ĐÍNH HÔN – ÁNH & ĐỨC' })).toBeInTheDocument()
+    expect(preview().getByText('03')).toBeInTheDocument()
+  })
+
+  it('requires confirmation, supports cancel, removes an event and renumbers', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(editor().getByRole('button', { name: 'Xóa sự kiện Lễ Vu Quy' }))
+    expect(preview().getByText('LỄ VU QUY')).toBeInTheDocument()
+    await user.click(editor().getByRole('button', { name: 'Hủy' }))
+    expect(preview().getByText('LỄ VU QUY')).toBeInTheDocument()
+    await user.click(editor().getByRole('button', { name: 'Xóa sự kiện Lễ Vu Quy' }))
+    await user.click(editor().getByRole('button', { name: 'Xóa' }))
+    expect(preview().queryByText('LỄ VU QUY')).not.toBeInTheDocument()
+    expect(editor().getByLabelText('Event 1 name')).toHaveValue('Lễ Thành Hôn')
+    expect(preview().queryByText('02')).not.toBeInTheDocument()
+    expect(preview().getByTestId('total-investment')).toHaveTextContent('13.500.000 VND')
+  })
+
+  it('reorders events with guarded ends and keeps collapsed state on the same event', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    expect(editor().getByRole('button', { name: 'Di chuyển lên Lễ Vu Quy' })).toBeDisabled()
+    expect(editor().getByRole('button', { name: 'Di chuyển xuống Lễ Thành Hôn' })).toBeDisabled()
+    await user.click(editor().getByRole('button', { name: 'Thu gọn Lễ Vu Quy' }))
+    expect(editor().queryByLabelText('Event 1 name')).not.toBeInTheDocument()
+    await user.click(editor().getByRole('button', { name: 'Di chuyển xuống Lễ Vu Quy' }))
+    expect(preview().getAllByRole('heading', { level: 3 }).map(el => el.textContent)).toEqual(['LỄ THÀNH HÔN', 'LỄ VU QUY'])
+    expect(editor().getByLabelText('Event 1 name')).toHaveValue('Lễ Thành Hôn')
+    expect(editor().queryByLabelText('Event 2 name')).not.toBeInTheDocument()
+    await user.click(editor().getByRole('button', { name: 'Mở rộng Lễ Vu Quy' }))
+    expect(editor().getByLabelText('Event 2 name')).toHaveValue('Lễ Vu Quy')
+  })
+
+  it('adds a focused service, edits description and price, then deletes it without deleting event', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(editor().getByRole('button', { name: 'Thêm dịch vụ cho Lễ Vu Quy' }))
+    const name = editor().getByLabelText('Dịch vụ mới name for Lễ Vu Quy')
+    expect(name).toHaveFocus()
+    fireEvent.change(name, { target: { value: 'Chụp ảnh lễ gia tiên' } })
+    fireEvent.change(editor().getByLabelText('Chụp ảnh lễ gia tiên description for Lễ Vu Quy'), { target: { value: 'Hai nhiếp ảnh gia · Trọn ngày' } })
+    const price = editor().getByLabelText('Chụp ảnh lễ gia tiên price for Lễ Vu Quy')
+    await user.clear(price)
+    expect(preview().getByTestId('total-investment')).toHaveTextContent('22.000.000 VND')
+    await user.type(price, '4500000')
+    expect(preview().getByText('Chụp ảnh lễ gia tiên')).toBeInTheDocument()
+    expect(preview().getByText('Hai nhiếp ảnh gia · Trọn ngày')).toBeInTheDocument()
+    expect(preview().getByTestId('total-investment')).toHaveTextContent('26.500.000 VND')
+    await user.click(editor().getByRole('button', { name: 'Xóa dịch vụ Chụp ảnh lễ gia tiên trong Lễ Vu Quy' }))
+    expect(preview().queryByText('Chụp ảnh lễ gia tiên')).not.toBeInTheDocument()
+    expect(preview().getByText('LỄ VU QUY')).toBeInTheDocument()
+    expect(preview().getByTestId('total-investment')).toHaveTextContent('22.000.000 VND')
+  })
+
+  it('types positive and negative adjustments and removes the empty section', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    expect(preview().queryByText('Phí & điều chỉnh')).not.toBeInTheDocument()
+    await user.click(editor().getByRole('button', { name: /thêm điều chỉnh/i }))
+    fireEvent.change(editor().getByLabelText('Adjustment 1 name'), { target: { value: 'Phí di chuyển' } })
+    await user.clear(editor().getByLabelText('Adjustment 1 amount'))
+    await user.type(editor().getByLabelText('Adjustment 1 amount'), '+1500000')
+    expect(preview().getByText('+1.500.000')).toBeInTheDocument()
+    await user.click(editor().getByRole('button', { name: /thêm điều chỉnh/i }))
+    fireEvent.change(editor().getByLabelText('Adjustment 2 name'), { target: { value: 'Ưu đãi' } })
+    await user.clear(editor().getByLabelText('Adjustment 2 amount'))
+    await user.type(editor().getByLabelText('Adjustment 2 amount'), '-1000000')
+    expect(preview().getByText('−1.000.000')).toBeInTheDocument()
+    expect(preview().getByTestId('total-investment')).toHaveTextContent('22.500.000 VND')
+    await user.click(editor().getByRole('button', { name: 'Xóa điều chỉnh Phí di chuyển' }))
+    await user.click(editor().getByRole('button', { name: 'Xóa điều chỉnh Ưu đãi' }))
+    expect(preview().queryByText('Phí & điều chỉnh')).not.toBeInTheDocument()
+    expect(preview().getByTestId('total-investment')).toHaveTextContent('22.000.000 VND')
+  })
+
+  it('allows deleting all events then adding one again', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    for (const name of ['Lễ Vu Quy', 'Lễ Thành Hôn']) {
+      await user.click(editor().getByRole('button', { name: `Xóa sự kiện ${name}` }))
+      await user.click(editor().getByRole('button', { name: 'Xóa' }))
+    }
+    expect(preview().queryByText('Chi tiết dịch vụ')).not.toBeInTheDocument()
+    expect(preview().getByTestId('total-investment')).toHaveTextContent('0 VND')
+    await user.click(editor().getByRole('button', { name: /thêm sự kiện/i }))
+    expect(editor().getByLabelText('Event 1 name')).toHaveValue('Sự kiện mới')
+  })
+})
