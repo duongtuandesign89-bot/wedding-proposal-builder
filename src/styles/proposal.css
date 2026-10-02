@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Italiana&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400&family=Lora:wght@400&family=Inter:wght@400;500;600&display=swap');
+
+.proposal-preview {
+  background: #d8d3ca;
+  color: #171714;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+}
+.preview-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  min-height: 72px;
+  padding: 16px 28px;
+  background: #171714;
+  color: #faf8f3;
+  font-family: 'DM Sans', Arial, sans-serif;
+}
+.preview-toolbar > div { display: grid; gap: 4px; min-width: 0; }
+.preview-eyebrow { color: #c5baaa; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+.preview-toolbar strong { font-size: 13px; font-weight: 500; overflow-wrap: anywhere; }
+.proposal-preview-canvas { max-width: 1176px; margin: 0 auto; padding: 40px 40px 72px; }
+.proposal-scale-frame { position: relative; width: 100%; overflow: hidden; }
+.proposal-scale-content { width: 1080px; transform-origin: top left; display: flow-root; }
+
+/* Desktop uses a 1080px composition. Mobile content is native-size while
+   the hero independently scales its unchanged 1080px editorial composition. */
+#proposal-document {
+  width: 1080px;
+  --document-paper: #f3efe7;
+  --document-ivory: #f3efe7;
+  --document-ink: #171714;
+  --document-black: #11110f;
+  --document-gold: #a98c59;
+  --document-muted: rgba(243,239,231,.70);
+  --document-quiet: rgba(243,239,231,.50);
+  --document-divider: rgba(243,239,231,.18);
+  --space-section: 84px;
+  --space-event: 40px;
+  --space-heading: 32px;
+  --space-service: 16px;
+  --quote-body-size: 22px;
+  --quote-meta-size: 18px;
+  --quote-heading-size: 36px;
+  --quote-label-size: 20px;
+  --quote-secondary: rgba(243,239,231,.72);
+  --quote-divider: rgba(243,239,231,.12);
+  --document-serif: 'Lora', 'Times New Roman', serif;
+  --document-display: 'Bodoni Moda', 'Lora', 'Times New Roman', serif;
+  --document-sans: 'Inter', Arial, sans-serif;
+  height: auto;
+  background: var(--document-black);
+  color: var(--document-paper);
+  font: 400 28px/1.5 var(--document-sans);
+  display: flow-root;
+}
+#proposal-document *, #proposal-document *::before, #proposal-document *::after { box-sizing: border-box; }
+#proposal-document :is(h2,h3,p,figure,dl,dd) { margin: 0; }
+#proposal-document :is(h2,h3,p,span,strong,dt,dd) { overflow-wrap: anywhere; min-width: 0; }
+#proposal-document .document-label { font: 400 14px/1.5 var(--document-sans); letter-spacing: .16em; text-transform: uppercase; }
+
+#proposal-document .proposal-hero { background: var(--document-black); color: var(--document-paper); aspect-ratio: 4 / 3; overflow: hidden; }
+#proposal-document .hero-cover { position: relative; width: 1080px; aspect-ratio: 4 / 3; isolation: isolate; transform-origin: top left; }
+#proposal-document .hero-photograph { position: absolute; inset: 0; }
+#proposal-document .hero-cover::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(10,10,8,.30) 0%, rgba(10,10,8,.12) 38%, transparent 65%), linear-gradient(0deg, #11110f, transparent 18%); }
+#proposal-document .hero-cover-type { position: absolute; inset: 0; z-index: 1; padding: 48px 72px; }
+#proposal-document .hero-masthead span { font: 400 17px/1.5 var(--document-sans); letter-spacing: .24em; text-transform: uppercase; }
+#proposal-document .hero-masthead { display: flex; align-items: center; justify-content: space-between; gap: 36px; }
+#proposal-document .hero-brand { display: flex; align-items: center; height: 30px; }
+#proposal-document .hero-masthead .hero-issue-label { font-size: 12px; letter-spacing: .18em; }
+#proposal-document .hero-masthead img { width: 80px; height: 80px; object-fit: contain; }
+#proposal-document .hero-heading { padding-top: 64px; }
+#proposal-document .hero-heading h2 { width: 570px; font: 400 106px/.88 var(--document-display); font-optical-sizing: auto; letter-spacing: -.02em; }
+#proposal-document .hero-heading h2 span { display: block; overflow-wrap: anywhere; }
+#proposal-document .hero-heading p { margin-top: var(--space-heading); font: 400 16px/1.6 var(--document-sans); letter-spacing: .18em; text-transform: uppercase; }
+#proposal-document .proposal-image { width: 100%; height: 100%; overflow: hidden; }
+#proposal-document .proposal-image img { display: block; width: 100%; height: 100%; object-fit: cover; }
+#proposal-document .hero-couple { position: absolute; left: 72px; bottom: 56px; width: 620px; display: grid; gap: 16px; }
+#proposal-document .hero-couple strong { display: block; font: 400 48px/1.3 var(--document-serif); letter-spacing: -.015em; }
+#proposal-document .hero-couple .couple-ampersand { color: var(--document-muted); }
+#proposal-document .hero-couple p { font-size: 14px; line-height: 1.7; letter-spacing: .06em; text-transform: uppercase; color: var(--document-muted); }
+#proposal-document .hero-couple p + p { margin-top: 4px; }
+
+#proposal-document .document-events { padding: var(--space-section) 84px 0; }
+#proposal-document .services-heading { color: var(--document-gold); padding: 0 0 var(--space-heading); font: 500 var(--quote-label-size)/1.2 var(--document-sans); letter-spacing: .16em; }
+#proposal-document .proposal-event { padding: 48px 0 var(--space-event); border-top: 1px solid var(--quote-divider); }
+#proposal-document .event-heading { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 24px; }
+#proposal-document .event-number { padding-top: 7px; color: var(--document-gold); font: 500 17px/1.5 var(--document-sans); letter-spacing: .12em; }
+#proposal-document .event-heading h3 { font: 400 var(--quote-heading-size)/1.05 var(--document-serif); letter-spacing: normal; }
+#proposal-document .event-date { margin-top: 16px; font: 400 var(--quote-meta-size)/1.55 var(--document-sans); letter-spacing: .035em; text-transform: uppercase; color: var(--quote-secondary); }
+#proposal-document .event-meta { display: grid; gap: 4px; margin-top: 4px; font: 400 var(--quote-meta-size)/1.55 var(--document-sans); letter-spacing: .035em; color: var(--quote-secondary); text-transform: uppercase; }
+#proposal-document .event-meta span:last-child { flex-shrink: 0; }
+#proposal-document .event-services { margin: 30px 0 0 80px; display: grid; row-gap: var(--space-service); }
+#proposal-document .event-service { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 32px; align-items: start; }
+#proposal-document .event-service strong { display: block; font: 400 var(--quote-body-size)/1.35 var(--document-sans); color: var(--document-paper); }
+#proposal-document .event-service dd { font: 400 var(--quote-body-size)/1.35 var(--document-sans); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--document-paper); }
+
+#proposal-document .proposal-investment { margin: 0 84px; padding: 48px 0 var(--space-section); border-top: 1px solid var(--quote-divider); }
+#proposal-document .proposal-investment .document-label { color: var(--document-gold); font: 500 18px/1.2 var(--document-sans); letter-spacing: .16em; }
+#proposal-document .proposal-investment > strong { display: grid; font: 400 62px/1 var(--document-display); letter-spacing: -.02em; margin-top: var(--space-heading); }
+#proposal-document .proposal-investment small { font: 400 16px/1.5 var(--document-sans); letter-spacing: .18em; color: var(--quote-secondary); margin-top: 10px; }
+#proposal-document .proposal-terms { display: grid; grid-template-columns: 230px minmax(0,1fr); gap: 40px; padding: var(--space-heading) 84px var(--space-section); border-top: 1px solid var(--document-divider); }
+#proposal-document .proposal-terms .document-label { font: 500 var(--quote-label-size)/1.2 var(--document-sans); }
+#proposal-document .proposal-terms p { white-space: pre-wrap; font: 400 var(--quote-body-size)/1.35 var(--document-sans); }
+#proposal-document .document-footer { margin: 0 84px; padding: var(--space-heading) 0 48px; border-top: 1px solid var(--document-divider); color: var(--document-quiet); }
+#proposal-document .document-footer > span { font: 400 14px/1.5 var(--document-sans); text-transform: uppercase; letter-spacing: .15em; }
+
+@media (max-width: 900px) {
+  .preview-toolbar { min-height: 64px; padding: 12px 16px; }
+  .proposal-preview-canvas { padding: 16px 10px 32px; }
+  .proposal-scale-content { width: 100%; }
+  #proposal-document {
+    width: 100%;
+    --quote-body-size: 16px;
+    --quote-meta-size: 12.5px;
+    --quote-heading-size: 23px;
+    --quote-label-size: 11.5px;
+    --space-event: 24px;
+    --space-service: 14px;
+  }
+  #proposal-document .document-events { padding: 28px 24px 0; }
+  #proposal-document .services-heading { padding-bottom: 20px; }
+  #proposal-document .proposal-event { padding-top: 28px; }
+  #proposal-document .event-heading { grid-template-columns: 16px minmax(0, 1fr); gap: 12px; }
+  #proposal-document .event-number { font-size: 10px; padding-top: 4px; }
+  #proposal-document .event-date { margin-top: 14px; }
+  #proposal-document .event-meta { gap: 2px; margin-top: 2px; }
+  #proposal-document .event-services { margin: 24px 0 0 28px; }
+  #proposal-document .event-service { column-gap: 16px; }
+  #proposal-document .proposal-investment { margin: 0 24px; padding: 28px 0 36px; }
+  #proposal-document .proposal-investment .document-label { font-size: 11.5px; }
+  #proposal-document .proposal-investment > strong { font-size: 44px; margin-top: 20px; }
+  #proposal-document .proposal-investment small { font-size: 11px; margin-top: 8px; }
+  #proposal-document .proposal-terms { margin: 0 24px; padding: 24px 0 32px; grid-template-columns: 1fr; gap: 16px; }
+  #proposal-document .document-footer { margin: 0 24px; padding: 20px 0 24px; }
+  #proposal-document .document-footer > span { font-size: 10px; }
+}

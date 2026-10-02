@@ -1,0 +1,70 @@
+:root {
+  color: #171714;
+  background: #e7e3dc;
+  font-family: 'DM Sans', Inter, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --app-ivory: #f3efe7;
+  --app-paper: #faf8f3;
+  --app-ink: #171714;
+  --app-black: #11110f;
+  --app-gold: #a98c59;
+  --app-taupe: #a69c8d;
+  --app-line: #dad4ca;
+  --app-muted: #706a61;
+  --focus-ring: #826939;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; min-height: 100%; }
+body { min-width: 320px; overflow: hidden; }
+button, input, textarea { font: inherit; }
+button, input { border-radius: 0; }
+button { cursor: pointer; }
+
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(400px, 38%) minmax(0, 62%);
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.mobile-mode-switch { display: none; }
+
+@media (max-width: 900px) {
+  body { overflow: hidden; }
+  .app-shell { display: block; height: 100dvh; padding-top: 64px; position: relative; }
+  .mobile-mode-switch {
+    background: var(--app-black);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 64px;
+    left: 0;
+    padding: 8px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 20;
+  }
+  .mobile-mode-switch button {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #a8a296;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    min-height: 48px;
+    text-transform: uppercase;
+    transition: background-color 180ms ease, color 180ms ease;
+  }
+  .mobile-mode-switch button.is-active { background: var(--app-paper); color: var(--app-black); }
+  .mobile-mode-switch button:focus-visible { outline: 2px solid var(--app-gold); outline-offset: -4px; }
+  .app-shell .proposal-editor,
+  .app-shell .proposal-preview { height: calc(100dvh - 64px); }
+  .app-shell--editor .proposal-preview { display: none; }
+  .app-shell--preview .proposal-editor { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
