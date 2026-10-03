@@ -6,6 +6,24 @@ import { createProposalRepository } from '../storage/proposalRepository'
 import { demoProposal } from '../data/demoProposal'
 
 describe('local library workflow', () => {
+  it('does not claim data was preserved when deletion succeeds but refreshing the library fails', async () => {
+    const repository = createProposalRepository(new IDBFactory())
+    await repository.save(demoProposal, null)
+    let deleted = false
+    const flaky = { ...repository,
+      delete: async (id: string) => { await repository.delete(id); deleted = true },
+      list: async () => { if (deleted) throw new Error('Cannot refresh'); return repository.list() },
+    }
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+    render(<App repository={flaky} />)
+    await userEvent.click(await screen.findByRole('button', { name: 'Xóa Ngọc & Huy' }))
+    await userEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Xóa' }))
+    const alert = await screen.findByRole('alert')
+    expect(await repository.load(demoProposal.id)).toBeNull()
+    expect(alert).not.toHaveTextContent('Dữ liệu hiện có không bị xóa')
+    expect(alert).toHaveTextContent('Vui lòng thử lại')
+    log.mockRestore()
+  })
   it('starts empty, creates a default, flushes edits on back and restores after remount', async () => {
     const repository = createProposalRepository(new IDBFactory())
     const user = userEvent.setup()

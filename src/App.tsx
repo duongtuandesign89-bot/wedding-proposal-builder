@@ -26,7 +26,7 @@ export default function App({ repository: suppliedRepository }: { repository?: P
   const run = async (operation: () => Promise<void>) => {
     setBusy(true); setError('')
     try { await operation() }
-    catch (cause) { console.error('Proposal library operation failed', cause); setError('Không thể thực hiện thao tác. Dữ liệu hiện có không bị xóa. Vui lòng thử lại.') }
+    catch (cause) { console.error('Proposal library operation failed', cause); setError('Không thể hoàn tất thao tác hoặc cập nhật thư viện. Vui lòng thử lại.') }
     finally { setBusy(false) }
   }
   if (opened) return <PersistedEditorSession key={opened.proposal.id} draft={opened} repository={repository} volatile={volatile} unsaved={opened.unsaved}

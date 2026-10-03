@@ -3,3 +3,10 @@ dist/
 *.tsbuildinfo
 .DS_Store
 .superpowers/
+.vercel/
+.env
+.env.*
+!.env.example
+.cache/
+.vite/
+*.log
