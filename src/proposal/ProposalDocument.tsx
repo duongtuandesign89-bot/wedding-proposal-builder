@@ -9,9 +9,9 @@ import { AdjustmentSection } from './AdjustmentSection'
 
 export const PROPOSAL_DESIGN_WIDTH = 1080
 
-export function ProposalDocument({ proposal }: { proposal: Proposal }) {
+export function ProposalDocument({ proposal, mode = 'preview' }: { proposal: Proposal; mode?: 'preview' | 'export' }) {
   return (
-    <article id="proposal-document" aria-label="Wedding proposal">
+    <article id={mode === 'export' ? 'proposal-export-document' : 'proposal-document'} data-export-mode={mode === 'export' ? 'true' : undefined} aria-label="Wedding proposal">
       <HeroSection proposal={proposal} />
       <IntroductionSection introduction={proposal.introduction} />
       {proposal.events.length > 0 && <div className="document-events">

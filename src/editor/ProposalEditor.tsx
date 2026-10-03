@@ -6,10 +6,11 @@ import { AmountField } from './AmountField'
 import { HeroImageEditor } from './HeroImageEditor'
 import { EditorGroup } from './EditorGroup'
 import { ContentEditor } from './ContentEditor'
+import type { ReactNode } from 'react'
 
-export function ProposalEditor({ proposal, actions, saveStatus = 'Live', onBack, onAssetChange, savingBack = false }: {
+export function ProposalEditor({ proposal, actions, saveStatus = 'Live', onBack, onAssetChange, savingBack = false, exportControl }: {
   proposal: Proposal; actions: ProposalEditorActions; saveStatus?: string; onBack?: () => void;
-  onAssetChange?: (image: HeroImage, file: File | null) => void; savingBack?: boolean
+  onAssetChange?: (image: HeroImage, file: File | null) => void; savingBack?: boolean; exportControl?: ReactNode
 }) {
   return <aside className="proposal-editor" aria-label="Proposal editor">
     <header className="editor-header">
@@ -17,6 +18,7 @@ export function ProposalEditor({ proposal, actions, saveStatus = 'Live', onBack,
       <div><p>Solis Studio</p><h1>Proposal Editor</h1></div>
       <span className={`editor-status${saveStatus === 'Không thể lưu' ? ' editor-status--error' : ''}`} role="status">{saveStatus}</span>
       {onBack && <button type="button" className="editor-back" disabled={savingBack} onClick={onBack}>{savingBack ? 'Đang lưu…' : '← Báo giá'}</button>}
+      {exportControl}
     </header>
     <div className="editor-content">
       <section className="editor-section">

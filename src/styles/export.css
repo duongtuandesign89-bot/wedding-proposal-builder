@@ -1,0 +1,29 @@
+.export-control { min-width: 0; }
+.editor-header > .export-control { grid-column: 1 / -1; justify-self: stretch; }
+.editor-header > .export-control > button { width: 100%; }
+.preview-toolbar > .export-control { margin-left: auto; padding-left: 12px; flex-shrink: 0; }
+.export-primary, .export-cancel {
+  min-height: 44px; padding: 10px 18px; border: 1px solid var(--app-ink);
+  font-size: 11px; font-weight: 600; letter-spacing: .08em;
+}
+.export-primary { background: var(--app-ink); color: var(--app-paper); }
+.preview-toolbar .export-primary { border-color: var(--app-gold); }
+.export-primary:hover:not(:disabled) { background: #303029; }
+.export-primary:disabled, .export-cancel:disabled { opacity: .55; cursor: wait; }
+.export-control button:focus-visible, .export-dialog button:focus-visible, .export-dialog input:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+.export-dialog {
+  background: var(--app-paper); color: var(--app-ink); border: 1px solid var(--app-line);
+  padding: 28px; width: min(420px, calc(100vw - 32px)); max-height: calc(100dvh - 48px);
+  overflow-y: auto; font-family: 'DM Sans', Inter, Arial, sans-serif;
+}
+.export-dialog::backdrop { background: rgba(17,17,15,.65); }
+.export-dialog h2 { font-size: 15px; font-weight: 600; letter-spacing: .12em; margin: 0 0 28px; }
+.export-dialog fieldset { border: 0; margin: 0 0 20px; padding: 0; min-width: 0; }
+.export-dialog legend { color: var(--app-muted); font-size: 12px; margin-bottom: 8px; }
+.export-dialog label { display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: 14px; cursor: pointer; }
+.export-dialog input { width: 18px; height: 18px; accent-color: var(--app-ink); margin: 0; }
+.export-actions { display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--app-line); padding-top: 20px; }
+.export-cancel { background: transparent; color: var(--app-ink); border-color: var(--app-line); }
+.export-cancel:hover:not(:disabled) { background: #ede8de; }
+.export-error { color: #9a3427; font-size: 13px; line-height: 1.6; margin: 0 0 20px; }
+.export-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

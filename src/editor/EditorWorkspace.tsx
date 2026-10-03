@@ -6,6 +6,9 @@ import type { AutosaveController, SaveStatus } from '../storage/autosave'
 import { ProposalEditor } from './ProposalEditor'
 import { useProposalEditor } from './useProposalEditor'
 import { ProposalPreview } from '../proposal/ProposalPreview'
+import { ExportControl } from '../export/ExportControl'
+import { exportProposal } from '../export/exportProposal'
+import type { ExportOptions } from '../export/exportOptions'
 
 export function EditorWorkspace({ initialProposal, initialImage = null, repository, onBack, volatile = false, unsaved = false, onInitialImageUnused }: {
   initialProposal: Proposal; initialImage?: Blob | null; repository?: ProposalRepository; onBack?: () => void; volatile?: boolean; unsaved?: boolean; onInitialImageUnused?: () => void
@@ -45,6 +48,14 @@ export function EditorWorkspace({ initialProposal, initialImage = null, reposito
     catch (error) { console.error('Cannot leave unsaved proposal', error); setSavingBack(false) }
   }
   const saveLabel = !repository ? 'Live' : volatile || status === 'error' ? 'Không thể lưu' : status === 'saving' ? 'Đang lưu…' : 'Đã lưu'
+  const exportCurrent = async (options: ExportOptions) => {
+    const current = snapshot.current
+    controller.current?.update(current)
+    try { await controller.current?.flush() }
+    catch (error) { console.error('Autosave before export failed; exporting current in-memory draft', error) }
+    await exportProposal(current.proposal, options, current.image)
+  }
+  const exportControl = <ExportControl onExport={exportCurrent} />
   return <div className={`app-shell app-shell--${mobileView}`}>
     <nav className="mobile-mode-switch" aria-label="View mode">
       <button type="button" className={mobileView === 'editor' ? 'is-active' : ''} aria-pressed={mobileView === 'editor'} onClick={() => setMobileView('editor')}>Chỉnh sửa</button>
@@ -54,7 +65,8 @@ export function EditorWorkspace({ initialProposal, initialImage = null, reposito
       {!volatile && <button type="button" onClick={() => { void controller.current?.flush().catch(error => console.error('Proposal save retry failed', error)) }}>Thử lưu lại</button>}
     </div>}
     <ProposalEditor proposal={proposal} actions={actions} saveStatus={saveLabel} onBack={onBack ? () => { void back() } : undefined} savingBack={savingBack}
+      exportControl={mobileView === 'editor' ? exportControl : undefined}
       onAssetChange={(next, file) => { setImage(file); actions.updateHeroImage(next); onInitialImageUnused?.() }} />
-    <ProposalPreview proposal={proposal} />
+    <ProposalPreview proposal={proposal} exportControl={mobileView === 'preview' ? exportControl : undefined} />
   </div>
 }
