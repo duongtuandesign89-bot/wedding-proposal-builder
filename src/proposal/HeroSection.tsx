@@ -1,5 +1,5 @@
 import type { Proposal } from '../types/proposal'
-import { ProposalImage } from './ProposalImage'
+import { PositionedImage } from './PositionedImage'
 
 export function HeroSection({ proposal }: { proposal: Proposal }) {
   const heroRef = useRef<HTMLElement>(null)
@@ -21,7 +21,7 @@ export function HeroSection({ proposal }: { proposal: Proposal }) {
     <header className="proposal-hero" ref={heroRef}>
       <div className="hero-cover" style={{ transform: `scale(${scale})` }}>
         <figure className="hero-photograph">
-          <ProposalImage src={proposal.settings.coverImage} alt={`${proposal.couple.brideName} and ${proposal.couple.groomName} wedding cover`} positionX={50} positionY={50} zoom={1} />
+          <PositionedImage {...proposal.heroImage} alt={`${proposal.couple.brideName} and ${proposal.couple.groomName} wedding cover`} />
         </figure>
         <div className="hero-cover-type">
           <div className="hero-masthead">

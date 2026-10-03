@@ -58,6 +58,16 @@
 .adjustment-editor-list { display: grid; gap: 16px; }
 .adjustment-editor-item { display: grid; min-width: 0; }
 .editor-help { color: var(--app-muted); font-size: 12px; line-height: 1.6; margin: 0 0 18px; }
+.hero-crop-preview { aspect-ratio: 4 / 3; background: var(--app-black); overflow: hidden; cursor: grab; touch-action: none; user-select: none; }
+.hero-crop-preview.is-dragging { cursor: grabbing; }
+.hero-crop-preview:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+.hero-crop-preview img { pointer-events: none; }
+.hero-image-editor .editor-help { margin-top: 12px; }
+.hero-zoom-control { display: grid; grid-template-columns: auto minmax(0,1fr) 48px; align-items: center; gap: 12px; min-height: 44px; font-size: 12px; color: var(--app-muted); }
+.hero-zoom-control input { width: 100%; min-width: 0; min-height: 44px; accent-color: var(--app-gold); }
+.hero-zoom-control output { text-align: right; font-variant-numeric: tabular-nums; }
+.hero-image-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.editor-image-error { color: #9a3427; font-size: 12px; line-height: 1.6; }
 .service-editor-list { border-top: 1px solid var(--app-line); display: grid; gap: 12px; margin-top: 20px; padding-top: 18px; }
 .service-editor-row { align-items: end; display: grid; gap: 10px; grid-template-columns: minmax(0, 1.25fr) minmax(112px, .75fr); min-width: 0; }
 .service-editor-row .editor-field:last-child input { font-variant-numeric: tabular-nums; text-align: right; }

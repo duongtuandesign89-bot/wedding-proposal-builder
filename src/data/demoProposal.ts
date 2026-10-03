@@ -1,4 +1,5 @@
 import type { Proposal } from '../types/proposal'
+import { DEFAULT_HERO_IMAGE } from '../utils/heroCrop'
 
 export const demoProposal: Proposal = {
   id: 'solis-ngoc-huy-2026',
@@ -67,10 +68,10 @@ export const demoProposal: Proposal = {
   ],
   adjustments: [],
   notes: '',
+  heroImage: { ...DEFAULT_HERO_IMAGE },
   settings: {
     studioName: 'Solis Studio',
     currency: 'VND',
     locale: 'vi-VN',
-    coverImage: '/assets/solis-wedding-details-cover.png',
   },
 }

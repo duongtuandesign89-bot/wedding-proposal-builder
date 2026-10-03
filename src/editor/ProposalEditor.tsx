@@ -3,6 +3,7 @@ import type { ProposalEditorActions } from './useProposalEditor'
 import { EditorField } from './EditorField'
 import { EventEditor } from './EventEditor'
 import { AmountField } from './AmountField'
+import { HeroImageEditor } from './HeroImageEditor'
 
 export function ProposalEditor({ proposal, actions }: { proposal: Proposal; actions: ProposalEditorActions }) {
   return <aside className="proposal-editor" aria-label="Proposal editor">
@@ -48,6 +49,7 @@ export function ProposalEditor({ proposal, actions }: { proposal: Proposal; acti
         </div>
         <button type="button" className="editor-add" onClick={actions.addAdjustment}>+ Thêm điều chỉnh</button>
       </section>
+      <HeroImageEditor image={proposal.heroImage} onChange={actions.updateHeroImage} />
     </div>
   </aside>
 }

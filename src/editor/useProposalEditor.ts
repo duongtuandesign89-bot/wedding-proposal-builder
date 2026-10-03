@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import type { Adjustment, Couple, Proposal, ServiceItem, WeddingEvent } from '../types/proposal'
+import type { Adjustment, Couple, HeroImage, Proposal, ServiceItem, WeddingEvent } from '../types/proposal'
 import { normalizeAmount, normalizeSignedAmount } from '../utils/currency'
+import { clampCrop } from '../utils/heroCrop'
 
 let fallbackId = 0
 function createId(): string {
@@ -9,6 +10,10 @@ function createId(): string {
 
 export function useProposalEditor(initialProposal: Proposal) {
   const [proposal, setProposal] = useState(initialProposal)
+  const updateHeroImage = (patch: Partial<HeroImage>) => setProposal(current => {
+    const heroImage = { ...current.heroImage, ...patch }
+    return { ...current, heroImage: { ...heroImage, ...clampCrop(heroImage) } }
+  })
   const updateCouple = (field: keyof Couple, value: string) => setProposal(current => ({
     ...current, couple: { ...current.couple, [field]: value },
   }))
@@ -51,7 +56,7 @@ export function useProposalEditor(initialProposal: Proposal) {
     setProposal(current => ({ ...current, adjustments: current.adjustments.map(item => item.id === id ? { ...item, ...normalized } : item) }))
   }
   const removeAdjustment = (id: string) => setProposal(current => ({ ...current, adjustments: current.adjustments.filter(item => item.id !== id) }))
-  return { proposal, updateCouple, updateGeneral, updateEvent, addEvent, removeEvent, moveEvent, addService, updateService, removeService, addAdjustment, updateAdjustment, removeAdjustment }
+  return { proposal, updateHeroImage, updateCouple, updateGeneral, updateEvent, addEvent, removeEvent, moveEvent, addService, updateService, removeService, addAdjustment, updateAdjustment, removeAdjustment }
 }
 
 export type ProposalEditorActions = Omit<ReturnType<typeof useProposalEditor>, 'proposal'>

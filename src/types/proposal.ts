@@ -24,7 +24,13 @@ export interface ProposalSettings {
   studioName: string
   currency: 'VND'
   locale: 'vi-VN'
-  coverImage: string
+}
+
+export interface HeroImage {
+  src: string
+  positionX: number
+  positionY: number
+  zoom: number
 }
 
 export interface Adjustment {
@@ -43,4 +49,5 @@ export interface Proposal {
   adjustments: Adjustment[]
   notes: string
   settings: ProposalSettings
+  heroImage: HeroImage
 }
