@@ -2,6 +2,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { ExportControl } from './ExportControl'
 import { ExportSizeError } from './exportOptions'
+import { ExportDiagnosticError } from './ExportDiagnosticError'
 
 beforeEach(() => {
   HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', '') }
@@ -56,4 +57,15 @@ it('Escape cancels and returns focus to the trigger', () => {
   fireEvent(screen.getByRole('dialog'), new Event('cancel', { bubbles: true, cancelable: true }))
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   expect(trigger).toHaveFocus()
+})
+it('shows a safe diagnostic code instead of exposing an underlying image URL', async () => {
+  vi.spyOn(console, 'error').mockImplementation(() => {})
+  const run = async () => { throw new ExportDiagnosticError('PREPARE', new Error('Export image failed: blob:private-client-image')) }
+  render(<ExportControl onExport={run} />)
+  fireEvent.click(screen.getByRole('button', { name: 'XUẤT BÁO GIÁ' }))
+  fireEvent.click(screen.getByRole('button', { name: 'XUẤT FILE' }))
+  const alert = await screen.findByRole('alert')
+  expect(alert).toHaveTextContent('PREPARE-IMAGE')
+  expect(alert).not.toHaveTextContent('private-client-image')
+  expect(screen.getByRole('button', { name: 'XUẤT FILE' })).toBeEnabled()
 })

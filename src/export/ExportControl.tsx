@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { ExportSizeError, type ExportFormat, type ExportOptions, type ExportQuality } from './exportOptions'
+import { ExportDiagnosticError } from './ExportDiagnosticError'
 
 export function ExportControl({ onExport }: { onExport: (options: ExportOptions) => Promise<void> }) {
   const [open, setOpen] = useState(false)
@@ -31,7 +32,9 @@ export function ExportControl({ onExport }: { onExport: (options: ExportOptions)
       timer.current = setTimeout(() => setStatus('idle'), 3000)
     } catch (cause) {
       console.error('Proposal export failed', cause)
-      setError(cause instanceof ExportSizeError ? cause.message : 'Không thể xuất báo giá. Vui lòng thử lại.')
+      setError(cause instanceof ExportSizeError ? cause.message
+        : cause instanceof ExportDiagnosticError ? `Không thể xuất báo giá. Mã lỗi: ${cause.code}. Vui lòng thử lại.`
+        : 'Không thể xuất báo giá. Vui lòng thử lại.')
       setStatus('idle')
     } finally { locked.current = false }
   }

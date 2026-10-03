@@ -2,7 +2,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { demoProposal } from '../data/demoProposal'
 import { exportProposal } from './exportProposal'
 
-const boundary = vi.hoisted(() => ({ height: 4000, error: false, clipped: false, nullBlob: false, bottomBlank: false, opaqueBlank: false, captured: null as HTMLElement | null, canvas: null as HTMLCanvasElement | null, downloads: [] as string[] }))
+const boundary = vi.hoisted(() => ({ height: 4000, error: false, clipped: false, nullBlob: false, bottomBlank: false, unavailableCanvas: false, opaqueBlank: false, captured: null as HTMLElement | null, canvas: null as HTMLCanvasElement | null, downloads: [] as string[] }))
 vi.mock('./prepareExport', () => ({ prepareExport: async () => {} }))
 vi.mock('./embedProposalFonts', () => ({ embedProposalFonts: async () => '@font-face{font-family:Inter;src:url(data:font/woff2;base64,Zm9udA==)}' }))
 vi.mock('modern-screenshot', () => ({
@@ -14,7 +14,16 @@ vi.mock('modern-screenshot', () => ({
     const canvas = document.createElement('canvas')
     canvas.width = Math.floor(options.width * options.scale)
     canvas.height = boundary.clipped ? 1920 : Math.floor(options.height * options.scale)
-    canvas.getContext = vi.fn(() => ({ getImageData: (_x: number, _y: number, width: number) => ({ data: [width > 1 && !boundary.opaqueBlank ? 255 : 17, 17, 15, boundary.bottomBlank ? 0 : 255] }) })) as unknown as typeof canvas.getContext
+    let restored = false
+    const paint = {
+      fillStyle: '', globalCompositeOperation: 'source-over', save: vi.fn(), restore: vi.fn(),
+      fillRect: vi.fn((x: number, y: number, width: number, height: number) => {
+        restored = paint.globalCompositeOperation === 'destination-over' && paint.fillStyle === '#11110f'
+          && x === 0 && y === 0 && width === canvas.width && height === canvas.height
+      }),
+      getImageData: (_x: number, _y: number, width: number) => ({ data: [width > 1 && !boundary.opaqueBlank ? 255 : 17, 17, 15, boundary.bottomBlank && !restored ? 0 : 255] }),
+    }
+    canvas.getContext = vi.fn(() => boundary.unavailableCanvas ? null : paint) as unknown as typeof canvas.getContext
     canvas.toBlob = (callback, type) => callback(boundary.nullBlob ? null : new Blob(['encoded image'], { type }))
     boundary.canvas = canvas
     return canvas
@@ -22,7 +31,7 @@ vi.mock('modern-screenshot', () => ({
 }))
 
 beforeEach(() => {
-  boundary.height = 4000; boundary.error = boundary.clipped = boundary.nullBlob = boundary.bottomBlank = boundary.opaqueBlank = false
+  boundary.height = 4000; boundary.error = boundary.clipped = boundary.nullBlob = boundary.bottomBlank = boundary.unavailableCanvas = boundary.opaqueBlank = false
   boundary.captured = boundary.canvas = null; boundary.downloads = []
   vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
     return { width: 1080, height: this.id === 'proposal-export-document' ? boundary.height : 810, top: 0, left: 0, bottom: boundary.height, right: 1080, x: 0, y: 0, toJSON: () => {} }
@@ -51,10 +60,10 @@ it('owns a fresh Blob URL for stored hero and revokes it even on capture failure
   expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:export-test')
   expect(document.querySelector('[data-export-host]')).toBeNull()
 })
-it('does not allow silent downscaling, clipping or blank bottom pixels', async () => {
+it('does not allow silent downscaling, clipping or unavailable canvas', async () => {
   boundary.clipped = true
   await expect(exportProposal(demoProposal, { format: 'png', quality: 'high' })).rejects.toThrow(/dimension/i)
-  boundary.clipped = false; boundary.bottomBlank = true
+  boundary.clipped = false; boundary.unavailableCanvas = true
   await expect(exportProposal(demoProposal, { format: 'png', quality: 'high' })).rejects.toThrow(/canvas/i)
   expect(boundary.downloads).toHaveLength(0)
 })
@@ -74,4 +83,26 @@ it('refuses excessive memory allocation before capture and cleans renderer', asy
   await expect(exportProposal(demoProposal, { format: 'jpg', quality: 'high' })).rejects.toThrow('Báo giá quá dài')
   expect(boundary.captured).toBeNull()
   expect(document.querySelector('[data-export-host]')).toBeNull()
+})
+it.each([
+  ['error', 'CAPTURE-ERROR'],
+  ['unavailableCanvas', 'VALIDATE-ALPHA'],
+  ['opaqueBlank', 'VALIDATE-BLANK'],
+  ['nullBlob', 'ENCODE-ERROR'],
+] as const)('identifies the failing export boundary for %s without changing cleanup', async (failure, code) => {
+  boundary[failure] = true
+  await expect(exportProposal(demoProposal, { format: 'jpg', quality: 'standard' })).rejects.toMatchObject({ code })
+  expect(boundary.downloads).toHaveLength(0)
+  expect(document.querySelector('[data-export-host]')).toBeNull()
+})
+it.each(['jpg', 'png'] as const)('restores background behind rendered content after Safari clears it for %s', async format => {
+  boundary.bottomBlank = true
+  await exportProposal(demoProposal, { format, quality: 'standard' })
+  expect(boundary.downloads).toEqual([`Ngọc-Huy-Wedding-Proposal.${format}`])
+  expect(document.querySelector('[data-export-host]')).toBeNull()
+})
+it('does not hide a missing render by restoring its background', async () => {
+  boundary.bottomBlank = boundary.opaqueBlank = true
+  await expect(exportProposal(demoProposal, { format: 'jpg', quality: 'standard' })).rejects.toMatchObject({ code: 'VALIDATE-BLANK' })
+  expect(boundary.downloads).toHaveLength(0)
 })
