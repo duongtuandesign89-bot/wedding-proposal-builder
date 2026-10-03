@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Adjustment, Couple, HeroImage, Proposal, ServiceItem, WeddingEvent } from '../types/proposal'
+import type { Adjustment, Contact, Couple, HeroImage, Introduction, Proposal, ServiceItem, WeddingEvent } from '../types/proposal'
 import { normalizeAmount, normalizeSignedAmount } from '../utils/currency'
 import { clampCrop } from '../utils/heroCrop'
 
@@ -10,6 +10,28 @@ function createId(): string {
 
 export function useProposalEditor(initialProposal: Proposal) {
   const [proposal, setProposal] = useState(initialProposal)
+  const updateIntroduction = (patch: Partial<Introduction>) => setProposal(current => ({
+    ...current, introduction: { ...current.introduction, ...patch },
+  }))
+  const updateContact = (patch: Partial<Contact>) => setProposal(current => ({
+    ...current, contact: { ...current.contact, ...patch },
+  }))
+  const setTextSectionEnabled = (section: 'notes' | 'terms', enabled: boolean) => setProposal(current => ({
+    ...current, [section]: { ...current[section], enabled },
+  }))
+  const changeTextItems = (section: 'notes' | 'terms', update: (items: string[]) => string[]) => setProposal(current => ({
+    ...current, [section]: { ...current[section], items: update(current[section].items) },
+  }))
+  const addTextItem = (section: 'notes' | 'terms') => changeTextItems(section, items => [...items, ''])
+  const updateTextItem = (section: 'notes' | 'terms', index: number, text: string) => changeTextItems(section, items => items.map((item, i) => i === index ? text : item))
+  const removeTextItem = (section: 'notes' | 'terms', index: number) => changeTextItems(section, items => items.filter((_, i) => i !== index))
+  const moveTextItem = (section: 'notes' | 'terms', index: number, direction: -1 | 1) => changeTextItems(section, items => {
+    const target = index + direction
+    if (index < 0 || index >= items.length || target < 0 || target >= items.length) return items
+    const reordered = [...items]
+    ;[reordered[index], reordered[target]] = [reordered[target], reordered[index]]
+    return reordered
+  })
   const updateHeroImage = (patch: Partial<HeroImage>) => setProposal(current => {
     const heroImage = { ...current.heroImage, ...patch }
     return { ...current, heroImage: { ...heroImage, ...clampCrop(heroImage) } }
@@ -56,7 +78,7 @@ export function useProposalEditor(initialProposal: Proposal) {
     setProposal(current => ({ ...current, adjustments: current.adjustments.map(item => item.id === id ? { ...item, ...normalized } : item) }))
   }
   const removeAdjustment = (id: string) => setProposal(current => ({ ...current, adjustments: current.adjustments.filter(item => item.id !== id) }))
-  return { proposal, updateHeroImage, updateCouple, updateGeneral, updateEvent, addEvent, removeEvent, moveEvent, addService, updateService, removeService, addAdjustment, updateAdjustment, removeAdjustment }
+  return { proposal, updateIntroduction, updateContact, setTextSectionEnabled, addTextItem, updateTextItem, removeTextItem, moveTextItem, updateHeroImage, updateCouple, updateGeneral, updateEvent, addEvent, removeEvent, moveEvent, addService, updateService, removeService, addAdjustment, updateAdjustment, removeAdjustment }
 }
 
 export type ProposalEditorActions = Omit<ReturnType<typeof useProposalEditor>, 'proposal'>

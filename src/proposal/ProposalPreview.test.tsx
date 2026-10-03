@@ -48,7 +48,7 @@ describe('proposal preview', () => {
   it('appends additional event content and notes within the same document', () => {
     const proposal = {
       ...demoProposal,
-      notes: 'A private note.\nA second line.',
+      notes: { enabled: true, items: ['A private note.', 'A second line.'] },
       events: [...demoProposal.events, {
         ...demoProposal.events[0], id: 'third-event', name: 'After Party',
         services: [{ id: 'extra', name: 'Evening coverage', price: 2_000_000 }],

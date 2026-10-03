@@ -4,6 +4,8 @@ import { EditorField } from './EditorField'
 import { EventEditor } from './EventEditor'
 import { AmountField } from './AmountField'
 import { HeroImageEditor } from './HeroImageEditor'
+import { EditorGroup } from './EditorGroup'
+import { ContentEditor } from './ContentEditor'
 
 export function ProposalEditor({ proposal, actions }: { proposal: Proposal; actions: ProposalEditorActions }) {
   return <aside className="proposal-editor" aria-label="Proposal editor">
@@ -28,15 +30,13 @@ export function ProposalEditor({ proposal, actions }: { proposal: Proposal; acti
           <EditorField label="Location" value={proposal.location} onChange={e => actions.updateGeneral('location', e.target.value)} />
         </div>
       </section>
-      <section className="editor-section">
-        <div className="editor-section-heading"><span>03</span><h2>Wedding Events</h2></div>
+      <EditorGroup number="03" title="Wedding Events">
         <div className="event-editors">
           {proposal.events.map((event, index) => <EventEditor key={event.id} event={event} index={index} count={proposal.events.length} actions={actions} />)}
         </div>
         <button type="button" className="editor-add" onClick={actions.addEvent}>+ Thêm sự kiện</button>
-      </section>
-      <section className="editor-section">
-        <div className="editor-section-heading"><span>04</span><h2>Điều chỉnh chi phí</h2></div>
+      </EditorGroup>
+      <EditorGroup number="04" title="Điều chỉnh chi phí">
         <p className="editor-help">Số dương cho phụ phí, số âm cho ưu đãi hoặc giảm giá.</p>
         <div className="adjustment-editor-list">
           {proposal.adjustments.map((item, index) => <div className="adjustment-editor-item" key={item.id}>
@@ -48,8 +48,9 @@ export function ProposalEditor({ proposal, actions }: { proposal: Proposal; acti
           </div>)}
         </div>
         <button type="button" className="editor-add" onClick={actions.addAdjustment}>+ Thêm điều chỉnh</button>
-      </section>
+      </EditorGroup>
       <HeroImageEditor image={proposal.heroImage} onChange={actions.updateHeroImage} />
+      <ContentEditor proposal={proposal} actions={actions} />
     </div>
   </aside>
 }

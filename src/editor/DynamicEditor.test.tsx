@@ -27,7 +27,7 @@ describe('dynamic quote editing', () => {
     await user.click(editor().getByRole('button', { name: 'Xóa' }))
     expect(preview().queryByText('LỄ VU QUY')).not.toBeInTheDocument()
     expect(editor().getByLabelText('Event 1 name')).toHaveValue('Lễ Thành Hôn')
-    expect(preview().queryByText('02')).not.toBeInTheDocument()
+    expect(preview().getAllByRole('heading', { level: 3 }).map(el => el.textContent)).toEqual(['LỄ THÀNH HÔN'])
     expect(preview().getByTestId('total-investment')).toHaveTextContent('13.500.000 VND')
   })
 

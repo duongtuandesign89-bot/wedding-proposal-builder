@@ -25,7 +25,7 @@ export function HeroSection({ proposal }: { proposal: Proposal }) {
         </figure>
         <div className="hero-cover-type">
           <div className="hero-masthead">
-            <div className="hero-brand"><img src="/assets/solis-logo-white.png" alt={proposal.settings.studioName} /></div>
+            <div className="hero-brand"><img src="/assets/solis-logo-white.png" alt={proposal.contact.studioName.trim() || 'Solis Studio'} /></div>
             <span className="hero-issue-label">Wedding proposal</span>
           </div>
           <div className="hero-heading">

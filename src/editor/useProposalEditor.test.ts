@@ -11,6 +11,27 @@ function freeze<T>(value: T): T {
 }
 
 describe('proposal data boundaries', () => {
+  it('keeps optional text updates immutable and serializable with guarded list moves', () => {
+    const initial = freeze(structuredClone(demoProposal))
+    const { result } = renderHook(() => useProposalEditor(initial))
+    act(() => {
+      result.current.updateIntroduction({ enabled: true, text: 'Cảm ơn\nHai bạn.' })
+      result.current.updateContact({ email: 'hello@example.com', address: 'Trà Vinh' })
+      result.current.addTextItem('notes')
+      result.current.updateTextItem('notes', 2, 'Ghi chú mới')
+      result.current.moveTextItem('notes', 2, -1)
+      result.current.moveTextItem('notes', 0, -1)
+      result.current.moveTextItem('terms', 1, 1)
+      result.current.setTextSectionEnabled('terms', false)
+    })
+    expect(result.current.proposal.notes.items[1]).toBe('Ghi chú mới')
+    act(() => result.current.moveTextItem('notes', 1, 1))
+    expect(result.current.proposal.notes.items[2]).toBe('Ghi chú mới')
+    expect(initial.introduction.enabled).toBe(false)
+    expect(initial.notes.items).toHaveLength(2)
+    expect(result.current.proposal.terms.items).toEqual(initial.terms.items)
+    expect(JSON.parse(JSON.stringify(result.current.proposal))).toEqual(result.current.proposal)
+  })
   it('keeps unique stable IDs through rename/reorder and deletes only the selected duplicate', () => {
     const { result } = renderHook(() => useProposalEditor({ ...demoProposal, events: [] }))
     act(() => { result.current.addEvent(); result.current.addEvent() })

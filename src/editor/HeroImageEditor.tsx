@@ -5,6 +5,7 @@ import { PositionedImage } from '../proposal/PositionedImage'
 import type { ImageDimensions } from '../proposal/PositionedImage'
 import { calculateCropGeometry, clampCrop, DEFAULT_HERO_IMAGE, HERO_FRAME_ASPECT_RATIO, moveCrop } from '../utils/heroCrop'
 import { useLocalHeroImage } from './useLocalHeroImage'
+import { EditorGroup } from './EditorGroup'
 
 interface DragStart {
   pointerId: number; x: number; y: number; crop: HeroImage; overflowX: number; overflowY: number
@@ -29,8 +30,7 @@ export function HeroImageEditor({ image, onChange }: { image: HeroImage; onChang
     setDragging(true)
   }
   const stopDrag = () => { drag.current = null; setDragging(false) }
-  return <section className="editor-section hero-image-editor">
-    <div className="editor-section-heading"><span>05</span><h2>Hero Image</h2></div>
+  return <EditorGroup number="05" title="Hero Image"><div className="hero-image-editor">
     <input ref={input} type="file" hidden aria-label="Chọn ảnh Hero" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
       onChange={event => {
         const file = event.target.files?.[0]
@@ -74,5 +74,5 @@ export function HeroImageEditor({ image, onChange }: { image: HeroImage; onChang
     {localImage.loading && <p className="editor-help" role="status">Đang đọc ảnh…</p>}
     {localImage.error && <p className="editor-image-error" role="alert">{localImage.error}</p>}
     {localImage.warning && <p className="editor-help" role="status">{localImage.warning}</p>}
-  </section>
+  </div></EditorGroup>
 }

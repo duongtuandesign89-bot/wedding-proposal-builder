@@ -2,7 +2,8 @@ import type { Proposal } from '../types/proposal'
 import { HeroSection } from './HeroSection'
 import { EventSection } from './EventSection'
 import { InvestmentSection } from './InvestmentSection'
-import { TermsSection } from './TermsSection'
+import { IntroductionSection } from './IntroductionSection'
+import { EditorialListSection } from './EditorialListSection'
 import { FooterSection } from './FooterSection'
 import { AdjustmentSection } from './AdjustmentSection'
 
@@ -12,14 +13,16 @@ export function ProposalDocument({ proposal }: { proposal: Proposal }) {
   return (
     <article id="proposal-document" aria-label="Wedding proposal">
       <HeroSection proposal={proposal} />
+      <IntroductionSection introduction={proposal.introduction} />
       {proposal.events.length > 0 && <div className="document-events">
         <h2 className="document-label services-heading">Chi tiết dịch vụ</h2>
         {proposal.events.map((event, index) => <EventSection key={event.id} event={event} index={index} />)}
       </div>}
       <AdjustmentSection adjustments={proposal.adjustments} />
       <InvestmentSection proposal={proposal} />
-      <TermsSection notes={proposal.notes} />
-      <FooterSection studioName={proposal.settings.studioName} />
+      <EditorialListSection content={proposal.notes} kind="notes" />
+      <EditorialListSection content={proposal.terms} kind="terms" />
+      <FooterSection contact={proposal.contact} />
     </article>
   )
 }

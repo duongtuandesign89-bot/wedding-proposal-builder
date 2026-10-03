@@ -21,9 +21,29 @@ export interface WeddingEvent {
 }
 
 export interface ProposalSettings {
-  studioName: string
   currency: 'VND'
   locale: 'vi-VN'
+}
+
+export interface Introduction {
+  enabled: boolean
+  text: string
+}
+
+export interface TextListSection {
+  enabled: boolean
+  items: string[]
+}
+
+export interface Contact {
+  enabled: boolean
+  studioName: string
+  phone: string
+  secondaryPhone?: string
+  email?: string
+  website?: string
+  social?: string
+  address?: string
 }
 
 export interface HeroImage {
@@ -47,7 +67,10 @@ export interface Proposal {
   location: string
   events: WeddingEvent[]
   adjustments: Adjustment[]
-  notes: string
+  introduction: Introduction
+  notes: TextListSection
+  terms: TextListSection
+  contact: Contact
   settings: ProposalSettings
   heroImage: HeroImage
 }
