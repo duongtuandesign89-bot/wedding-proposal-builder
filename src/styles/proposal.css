@@ -113,7 +113,7 @@
 :is(#proposal-document, #proposal-export-document) .editorial-item-number { padding-top: 3px; font: 400 12px/1.6 var(--document-sans); color: var(--document-gold); }
 :is(#proposal-document, #proposal-export-document) .document-footer { margin: 0 84px; padding: var(--space-heading) 0 48px; border-top: 1px solid var(--document-divider); color: var(--document-quiet); }
 :is(#proposal-document, #proposal-export-document) .document-footer > span { font: 400 14px/1.5 var(--document-sans); text-transform: uppercase; letter-spacing: .15em; }
-:is(#proposal-document, #proposal-export-document) .footer-contact-details { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px 32px; margin-top: 16px; }
+:is(#proposal-document, #proposal-export-document) .footer-contact-details { display: grid; grid-template-columns: minmax(0,1fr); gap: 8px; margin-top: 16px; text-align: left; }
 :is(#proposal-document, #proposal-export-document) .footer-contact-details p { font: 400 var(--quote-meta-size)/1.6 var(--document-sans); color: var(--quote-secondary); white-space: pre-wrap; }
 
 :is(#proposal-document, #proposal-export-document) .service-description { margin-top: 6px; font: 400 var(--quote-meta-size)/1.55 var(--document-sans); color: var(--quote-secondary); white-space: pre-wrap; }

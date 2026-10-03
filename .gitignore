@@ -10,3 +10,4 @@ dist/
 .cache/
 .vite/
 *.log
+.vercel

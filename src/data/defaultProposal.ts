@@ -11,6 +11,6 @@ export function createDefaultProposal(): Proposal {
     ] }], adjustments: [], introduction: { enabled: false, text: '' },
     notes: { enabled: true, items: ['File ảnh được bàn giao qua link online.', 'Chi phí phát sinh được xác nhận riêng.'] },
     terms: { enabled: true, items: ['Đặt cọc 30% để xác nhận lịch.', 'Thời gian bàn giao ảnh dự kiến 30 ngày.'] },
-    contact: { enabled: true, studioName: 'Solis Studio', phone: '' }, settings: { currency: 'VND', locale: 'vi-VN' }, heroImage: { ...DEFAULT_HERO_IMAGE },
+    contact: { enabled: true, studioName: 'Solis Studio', phone: '(+84) 703 654 945', website: 'www.facebook.com/solisstudiovn' }, settings: { currency: 'VND', locale: 'vi-VN' }, heroImage: { ...DEFAULT_HERO_IMAGE },
   }
 }

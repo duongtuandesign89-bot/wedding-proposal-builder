@@ -12,6 +12,15 @@ describe('local proposal repository', () => {
   let factory: IDBFactory
   beforeEach(() => { factory = new IDBFactory() })
   const repo = () => createProposalRepository(factory)
+  it('prefills new proposal contacts and preserves manually cleared contacts on reload', async () => {
+    const proposal = createDefaultProposal()
+    expect(proposal.contact.phone).toBe('(+84) 703 654 945')
+    expect(proposal.contact.website).toBe('www.facebook.com/solisstudiovn')
+    await repo().save({ ...proposal, contact: { ...proposal.contact, phone: '', website: '' } }, null)
+    const restored = await repo().load(proposal.id)
+    expect(restored?.proposal.contact.phone).toBe('')
+    expect(restored?.proposal.contact.website).toBe('')
+  })
   it('starts empty and creates a default with unique nested IDs and no demo clients', async () => {
     expect(await repo().list()).toEqual([])
     const a = createDefaultProposal(), b = createDefaultProposal()
