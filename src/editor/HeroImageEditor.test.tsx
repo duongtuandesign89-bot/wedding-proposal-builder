@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import App from '../App'
+import App from '../test/DemoApp'
 
 let serial = 0
 const revoked: string[] = []

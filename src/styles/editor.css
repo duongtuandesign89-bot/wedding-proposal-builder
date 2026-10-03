@@ -31,6 +31,7 @@
 .editor-grid { display: grid; gap: 14px; }
 .editor-grid--two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .editor-field { display: grid; gap: 7px; min-width: 0; }
+.editor-field-optional { font-size: inherit; font-weight: 400; letter-spacing: 0; text-transform: none; }
 .editor-field > span, .service-editor-label { color: var(--app-muted); font-size: 10px; font-weight: 600; letter-spacing: .08em; margin: 0; min-width: 0; overflow-wrap: anywhere; text-transform: uppercase; }
 .editor-field input { background: #fffefa; border: 1px solid #d6d0c6; color: var(--app-ink); font-size: 14px; height: 46px; min-width: 0; padding: 0 12px; transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease; width: 100%; }
 .editor-field input:hover { border-color: #afa697; }

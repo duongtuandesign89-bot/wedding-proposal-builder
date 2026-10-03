@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import App from '../App'
+import App from '../test/DemoApp'
 
 const preview = () => within(screen.getByRole('article', { name: 'Wedding proposal' }))
 const intro = 'Cảm ơn Ngọc & Huy đã tin tưởng Solis Studio.'

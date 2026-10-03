@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import App from './App'
+import App from './test/DemoApp'
 
 describe('proposal live editing', () => {
   it('renders an editable cover headline as individually composed words without losing its accessible title', () => {

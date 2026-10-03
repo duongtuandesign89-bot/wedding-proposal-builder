@@ -21,7 +21,7 @@ function readDimensions(src: string): Promise<void> {
 }
 
 // Own browser resources here, never put File objects into Proposal JSON.
-export function useLocalHeroImage(onChange: (image: HeroImage) => void) {
+export function useLocalHeroImage(onChange: (image: HeroImage, file?: File | null) => void) {
   const [error, setError] = useState('')
   const [warning, setWarning] = useState('')
   const [loading, setLoading] = useState(false)
@@ -59,7 +59,7 @@ export function useLocalHeroImage(onChange: (image: HeroImage) => void) {
       if (request.current !== currentRequest) { release(src); return }
       const previous = activeUrl.current
       activeUrl.current = src
-      change.current({ ...DEFAULT_HERO_IMAGE, src })
+      change.current({ ...DEFAULT_HERO_IMAGE, src }, file)
       if (previous) release(previous)
       setWarning(file.size > 30 * 1024 * 1024 ? 'Ảnh có dung lượng lớn, trình duyệt có thể xử lý chậm.' : '')
     } catch {
@@ -71,7 +71,7 @@ export function useLocalHeroImage(onChange: (image: HeroImage) => void) {
   }
   const removeImage = () => {
     request.current++
-    change.current({ ...DEFAULT_HERO_IMAGE })
+    change.current({ ...DEFAULT_HERO_IMAGE }, null)
     for (const src of urls.current) release(src)
     activeUrl.current = null
     setLoading(false); setError(''); setWarning('')

@@ -1,5 +1,6 @@
 import type { Proposal } from '../types/proposal'
 import { PositionedImage } from './PositionedImage'
+import { getProposalDisplayName } from '../utils/proposalDisplayName'
 
 export function HeroSection({ proposal }: { proposal: Proposal }) {
   const heroRef = useRef<HTMLElement>(null)
@@ -15,13 +16,14 @@ export function HeroSection({ proposal }: { proposal: Proposal }) {
     measure()
     return () => observer.disconnect()
   }, [])
-  const nameLength = proposal.couple.brideName.length + proposal.couple.groomName.length + 3
+  const coupleName = getProposalDisplayName(proposal, 'hero')
+  const nameLength = coupleName.length
   const nameSize = Math.max(32, Math.min(48, 48 * 24 / Math.max(24, nameLength)))
   return (
     <header className="proposal-hero" ref={heroRef}>
       <div className="hero-cover" style={{ transform: `scale(${scale})` }}>
         <figure className="hero-photograph">
-          <PositionedImage {...proposal.heroImage} alt={`${proposal.couple.brideName} and ${proposal.couple.groomName} wedding cover`} />
+          <PositionedImage {...proposal.heroImage} alt={coupleName ? `${coupleName.replace(' & ', ' and ')} wedding cover` : 'Wedding proposal cover'} />
         </figure>
         <div className="hero-cover-type">
           <div className="hero-masthead">
@@ -33,11 +35,9 @@ export function HeroSection({ proposal }: { proposal: Proposal }) {
             <p>Ảnh &amp; phim / Ngày cưới</p>
           </div>
           <div className="hero-couple">
-            <strong data-testid="cover-couple" style={{ fontSize: nameSize }}>
-              <span>{proposal.couple.brideName.toLocaleUpperCase('vi-VN')}</span>{' '}
-              <span className="couple-ampersand">&amp;</span>{' '}
-              <span>{proposal.couple.groomName.toLocaleUpperCase('vi-VN')}</span>
-            </strong>
+            {coupleName && <strong data-testid="cover-couple" style={{ fontSize: nameSize }}>
+              {coupleName.toLocaleUpperCase('vi-VN').split(/( & )/).map((part, index) => <span key={index} className={part === ' & ' ? 'couple-ampersand' : undefined}>{part}</span>)}
+            </strong>}
             <div className="couple-details"><p>{proposal.weddingDate}</p><p>{proposal.location}</p></div>
           </div>
         </div>

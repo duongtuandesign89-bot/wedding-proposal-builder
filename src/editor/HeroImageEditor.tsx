@@ -11,13 +11,16 @@ interface DragStart {
   pointerId: number; x: number; y: number; crop: HeroImage; overflowX: number; overflowY: number
 }
 
-export function HeroImageEditor({ image, onChange }: { image: HeroImage; onChange: (patch: Partial<HeroImage>) => void }) {
+export function HeroImageEditor({ image, onChange, onAssetChange }: { image: HeroImage; onChange: (patch: Partial<HeroImage>) => void; onAssetChange?: (image: HeroImage, file: File | null) => void }) {
   const input = useRef<HTMLInputElement>(null)
   const drag = useRef<DragStart | null>(null)
   const [dragging, setDragging] = useState(false)
   const [dimensions, setDimensions] = useState<ImageDimensions | null>(null)
   useEffect(() => { drag.current = null; setDragging(false) }, [image.src])
-  const localImage = useLocalHeroImage(onChange)
+  const localImage = useLocalHeroImage((next, file) => {
+    if (onAssetChange) onAssetChange(next, file ?? null)
+    else onChange(next)
+  })
   const custom = image.src !== DEFAULT_HERO_IMAGE.src
   const startDrag = (event: PointerEvent<HTMLDivElement>) => {
     if (!event.isPrimary || event.button !== 0 || dimensions?.src !== image.src) return
